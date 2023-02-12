@@ -10,7 +10,7 @@ trainer = ChatterBotCorpusTrainer(chatbot)
 trainer.train('chatterbot.corpus.english')
 
 # Set up the Telegram bot
-TOKEN = 'YOUR_TOKEN_HERE'
+TOKEN = '5893160347:AAHfrd5QESVn1twJlt8m2kEEOwIhjponk3g'
 bot = telegram.Bot(token=TOKEN)
 
 # Enable logging
