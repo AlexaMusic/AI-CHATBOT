@@ -1,2 +1,2 @@
-ChatterBot
-python-telegram-bot==12.8
+python-telegram-bot
+openai
