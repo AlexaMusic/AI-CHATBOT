@@ -1,3 +1,2 @@
 python-telegram-bot==13.12
 chatterbot
-git+git://github.com/gunthercox/chatterbot-corpus@master#egg=chatterbot_corpus
