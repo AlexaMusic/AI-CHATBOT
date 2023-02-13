@@ -3,7 +3,7 @@ import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 # Set up the OpenAI API key
-openai.api_key = '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'
+openai.api_key = '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'
 
 # Define the message handler function
 def chat(update, context):
