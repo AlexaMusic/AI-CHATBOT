@@ -6,7 +6,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 # Define a dictionary to store secret codes and verified users
-users = {}
+users = 'AlexaCode'
 
 # Define a function to handle the start command
 def start(update, context):
