@@ -1,58 +1,47 @@
-import logging
+import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram import ChatAction
-import openai
+from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
+import logging
 
-# Set up OpenAI API
-openai.api_key = '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'
+# Set up the logger
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Set up logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+# Set up the chatbot
+chatbot = ChatBot('MyBot')
+trainer = ChatterBotCorpusTrainer(chatbot)
+trainer.train("chatterbot.corpus.english")
+
+# Define a function to handle incoming messages
+def handle_message(update, context):
+    text = update.message.text
+    response = chatbot.get_response(text)
+    update.message.reply_text(str(response))
 
 # Define a function to start the bot
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Hi! I'm an AI chatbot. Send me a message and I'll try to respond with something intelligent.")
+def start_bot():
+    # Set up the Telegram API and get the bot's token
+    token = "5893160347:AAHfrd5QESVn1twJlt8m2kEEOwIhjponk3g"
+    bot = telegram.Bot(token)
+    updater = Updater(token, use_context=True)
 
-# Define a function to handle text messages
-def handle_message(update, context):
-    # Send typing action to show the bot is processing
-    context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
-    
-    # Get the message text
-    message_text = update.message.text
-    
-    # Use OpenAI to generate a response
-    response = openai.Completion.create(
-        engine='davinci',
-        prompt=message_text,
-        temperature=0.5,
-        max_tokens=50,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-    
-    # Send the response to the user
-    context.bot.send_message(chat_id=update.effective_chat.id, text=response.choices[0].text)
-
-# Set up the Telegram bot
-def main():
-    # Create an Updater object
-    updater = Updater(token='5893160347:AAHfrd5QESVn1twJlt8m2kEEOwIhjponk3g', use_context=True)
-
-    # Get the dispatcher to register handlers
+    # Set up the command handler for the /start command
     dispatcher = updater.dispatcher
+    start_handler = CommandHandler('start', start)
+    dispatcher.add_handler(start_handler)
 
-    # Add command handlers
-    dispatcher.add_handler(CommandHandler('start', start))
-
-    # Add message handler
-    dispatcher.add_handler(MessageHandler(Filters.text, handle_message))
+    # Set up the message handler to handle incoming messages
+    message_handler = MessageHandler(Filters.text, handle_message)
+    dispatcher.add_handler(message_handler)
 
     # Start the bot
     updater.start_polling()
-    logging.info('Telegram AI bot started. Press Ctrl+C to stop.')
-    updater.idle()
+    logger.info("Bot started.")
 
-if __name__ == '__main__':
-    main()
+# Define a function to handle the /start command
+def start(update, context):
+    update.message.reply_text('Hello! I am a chatbot. How can I help you today?')
+
+start_bot()
